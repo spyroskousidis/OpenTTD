@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -15,10 +13,44 @@
  * functions may still be available if you return an older API version
  * in GetAPIVersion() in info.nut.
  *
+ * \b 1.11.0
+ *
+ * This version is not yet released. The following changes are not set in stone yet.
+ *
+ * API additions:
+ * \li GSEventStoryPageButtonClick
+ * \li GSEventStoryPageTileSelect
+ * \li GSEventStoryPageVehicleSelect
+ * \li GSIndustry::GetCargoLastAcceptedDate
+ * \li GSIndustry::GetControlFlags
+ * \li GSIndustry::GetExclusiveConsumer
+ * \li GSIndustry::GetExclusiveSupplier
+ * \li GSIndustry::GetLastProductionYear
+ * \li GSIndustry::SetControlFlags
+ * \li GSIndustry::SetExclusiveConsumer
+ * \li GSIndustry::SetExclusiveSupplier
+ * \li GSStoryPage::MakePushButtonReference
+ * \li GSStoryPage::MakeTileButtonReference
+ * \li GSStoryPage::MakeVehicleButtonReference
+ * \li GSPriorityQueue
+ *
+ * \b 1.10.0
+ *
+ * API additions:
+ * \li GSVehicle::BuildVehicleWithRefit
+ * \li GSVehicle::GetBuildWithRefitCapacity
+ * \li GSRoad::GetName
+ * \li GSRoad::RoadVehCanRunOnRoad
+ * \li GSRoad::RoadVehHasPowerOnRoad
+ * \li GSRoad::ConvertRoadType
+ * \li GSRoad::GetMaxSpeed
+ * \li GSEngine::EnableForCompany
+ * \li GSEngine::DisableForCompany
+ *
  * \b 1.9.0
  *
- * 1.9.0 is not yet released. The following changes are not set in stone yet.
  * API additions:
+ * \li GSAirport::GetMonthlyMaintenanceCost
  * \li GSClient
  * \li GSClientList
  * \li GSClientList_Company
@@ -27,9 +59,15 @@
  * \li GSViewport::ScrollClientTo
  * \li GSGoal::QuestionClient
  *
+ * Other changes:
+ * \li GSBridge::GetName takes one extra parameter to refer the vehicle type
+ *
  * \b 1.8.0
  *
  * No changes
+ *
+ * API additions:
+ * \li GSRoad::ERR_ROADTYPE_DISALLOWS_CROSSING
  *
  * \b 1.7.0 - 1.7.2
  *

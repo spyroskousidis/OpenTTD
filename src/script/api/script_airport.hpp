@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -201,6 +199,14 @@ public:
 	 * @return Maintenance cost factor of the airport type.
 	 */
 	static uint16 GetMaintenanceCostFactor(AirportType type);
+
+	/**
+	 * Get the monthly maintenance cost of an airport type.
+	 * @param type The airport type to get the monthly maintenance cost of.
+	 * @pre IsAirportInformationAvailable(type)
+	 * @return Monthly maintenance cost of the airport type.
+	 */
+	static Money GetMonthlyMaintenanceCost(AirportType type);
 };
 
 #endif /* SCRIPT_AIRPORT_HPP */

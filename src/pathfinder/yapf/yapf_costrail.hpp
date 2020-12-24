@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -46,14 +44,6 @@ protected:
 			this->td = td;
 			this->tile_type = GetTileType(tile);
 			this->rail_type = GetTileRailType(tile);
-		}
-
-		TILE(const TILE &src)
-		{
-			tile = src.tile;
-			td = src.td;
-			tile_type = src.tile_type;
-			rail_type = src.rail_type;
 		}
 	};
 
@@ -104,7 +94,7 @@ public:
 		assert(IsValidTrackdir(td2));
 		int cost = 0;
 		if (TrackFollower::Allow90degTurns()
-				&& ((TrackdirToTrackdirBits(td2) & (TrackdirBits)TrackdirCrossesTrackdirs(td1)) != 0)) {
+				&& HasTrackdir(TrackdirCrossesTrackdirs(td1), td2)) {
 			/* 90-deg curve penalty */
 			cost += Yapf().PfGetSettings().rail_curve90_penalty;
 		} else if (td2 != NextTrackdir(td1)) {
@@ -251,7 +241,7 @@ public:
 	{
 		int cost = 0;
 		const Train *v = Yapf().GetVehicle();
-		assert(v != NULL);
+		assert(v != nullptr);
 		assert(v->type == VEH_TRAIN);
 		assert(v->gcache.cached_total_length != 0);
 		int missing_platform_length = CeilDiv(v->gcache.cached_total_length, TILE_SIZE) - platform_length;
@@ -280,12 +270,12 @@ public:
 	{
 		assert(!n.flags_u.flags_s.m_targed_seen);
 		assert(tf->m_new_tile == n.m_key.m_tile);
-		assert((TrackdirToTrackdirBits(n.m_key.m_td) & tf->m_new_td_bits) != TRACKDIR_BIT_NONE);
+		assert((HasTrackdir(tf->m_new_td_bits, n.m_key.m_td)));
 
 		CPerfStart perf_cost(Yapf().m_perf_cost);
 
 		/* Does the node have some parent node? */
-		bool has_parent = (n.m_parent != NULL);
+		bool has_parent = (n.m_parent != nullptr);
 
 		/* Do we already have a cached segment? */
 		CachedData &segment = *n.m_segment;
@@ -496,7 +486,7 @@ no_entry_cost: // jump here at the beginning if the node has no parent (it is th
 			if (!tf_local.Follow(cur.tile, cur.td)) {
 				assert(tf_local.m_err != TrackFollower::EC_NONE);
 				/* Can't move to the next tile (EOL?). */
-				if (tf_local.m_err == TrackFollower::EC_RAIL_TYPE) {
+				if (tf_local.m_err == TrackFollower::EC_RAIL_ROAD_TYPE) {
 					end_segment_reason |= ESRB_RAIL_TYPE;
 				} else {
 					end_segment_reason |= ESRB_DEAD_END;
@@ -606,7 +596,7 @@ no_entry_cost: // jump here at the beginning if the node has no parent (it is th
 			/* Station platform-length penalty. */
 			if ((end_segment_reason & ESRB_STATION) != ESRB_NONE) {
 				const BaseStation *st = BaseStation::GetByTile(n.GetLastTile());
-				assert(st != NULL);
+				assert(st != nullptr);
 				uint platform_length = st->GetPlatformLength(n.GetLastTile(), ReverseDiagDir(TrackdirToExitdir(n.GetLastTrackdir())));
 				/* Reduce the extra cost caused by passing-station penalty (each station receives it in the segment cost). */
 				extra_cost -= Yapf().PfGetSettings().rail_station_penalty * platform_length;
@@ -624,7 +614,7 @@ no_entry_cost: // jump here at the beginning if the node has no parent (it is th
 	inline bool CanUseGlobalCache(Node &n) const
 	{
 		return !m_disable_cache
-			&& (n.m_parent != NULL)
+			&& (n.m_parent != nullptr)
 			&& (n.m_parent->m_num_signals_passed >= m_sig_look_ahead_costs.Size());
 	}
 

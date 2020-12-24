@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -19,6 +17,7 @@
 #include "blitter/factory.hpp"
 #include "linkgraph/linkgraph_gui.h"
 #include "widgets/smallmap_widget.h"
+#include "guitimer_func.h"
 
 /* set up the cargos to be displayed in the smallmap's route legend */
 void BuildLinkStatsLegend();
@@ -67,8 +66,8 @@ protected:
 
 	static const uint LEGEND_BLOB_WIDTH = 8;              ///< Width of the coloured blob in front of a line text in the #WID_SM_LEGEND widget.
 	static const uint INDUSTRY_MIN_NUMBER_OF_COLUMNS = 2; ///< Minimal number of columns in the #WID_SM_LEGEND widget for the #SMT_INDUSTRY legend.
-	static const uint FORCE_REFRESH_PERIOD = 0x1F; ///< map is redrawn after that many ticks
-	static const uint BLINK_PERIOD         = 0x0F; ///< highlight blinking interval
+	static const uint FORCE_REFRESH_PERIOD = 930; ///< map is redrawn after that many milliseconds.
+	static const uint BLINK_PERIOD         = 450; ///< highlight blinking interval in milliseconds.
 
 	uint min_number_of_columns;    ///< Minimal number of columns in legends.
 	uint min_number_of_fixed_rows; ///< Minimal number of rows in the legends for the fixed layouts only (all except #SMT_INDUSTRY).
@@ -79,7 +78,7 @@ protected:
 	int32 subscroll; ///< Number of pixels (0..3) between the right end of the base tile and the pixel at the top-left corner of the smallmap display.
 	int zoom;        ///< Zoom level. Bigger number means more zoom-out (further away).
 
-	uint8 refresh;   ///< Refresh counter, zeroed every FORCE_REFRESH_PERIOD ticks.
+	GUITimer refresh; ///< Refresh timer.
 	LinkGraphOverlay *overlay;
 
 	static void BreakIndustryChainLink();
@@ -179,17 +178,17 @@ public:
 	void SmallMapCenterOnCurrentPos();
 	Point GetStationMiddle(const Station *st) const;
 
-	virtual void SetStringParameters(int widget) const;
-	virtual void OnInit();
-	virtual void OnPaint();
-	virtual void DrawWidget(const Rect &r, int widget) const;
-	virtual void OnClick(Point pt, int widget, int click_count);
-	virtual void OnInvalidateData(int data = 0, bool gui_scope = true);
-	virtual bool OnRightClick(Point pt, int widget);
-	virtual void OnMouseWheel(int wheel);
-	virtual void OnTick();
-	virtual void OnScroll(Point delta);
-	virtual void OnMouseOver(Point pt, int widget);
+	void SetStringParameters(int widget) const override;
+	void OnInit() override;
+	void OnPaint() override;
+	void DrawWidget(const Rect &r, int widget) const override;
+	void OnClick(Point pt, int widget, int click_count) override;
+	void OnInvalidateData(int data = 0, bool gui_scope = true) override;
+	bool OnRightClick(Point pt, int widget) override;
+	void OnMouseWheel(int wheel) override;
+	void OnRealtimeTick(uint delta_ms) override;
+	void OnScroll(Point delta) override;
+	void OnMouseOver(Point pt, int widget) override;
 };
 
 #endif /* SMALLMAP_GUI_H */

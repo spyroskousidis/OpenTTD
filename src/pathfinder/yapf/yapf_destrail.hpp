@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -166,16 +164,13 @@ public:
 	/** Called by YAPF to detect if node ends in the desired destination */
 	inline bool PfDetectDestination(TileIndex tile, Trackdir td)
 	{
-		bool bDest;
 		if (m_dest_station_id != INVALID_STATION) {
-			bDest = HasStationTileRail(tile)
+			return HasStationTileRail(tile)
 				&& (GetStationIndex(tile) == m_dest_station_id)
 				&& (GetRailStationTrack(tile) == TrackdirToTrack(td));
-		} else {
-			bDest = (tile == m_destTile)
-				&& ((m_destTrackdirs & TrackdirToTrackdirBits(td)) != TRACKDIR_BIT_NONE);
 		}
-		return bDest;
+
+		return (tile == m_destTile) && HasTrackdir(m_destTrackdirs, td);
 	}
 
 	/**

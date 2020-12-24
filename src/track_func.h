@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -19,7 +17,7 @@
 
 /**
  * Iterate through each set Track in a TrackBits value.
- * For more informations see FOR_EACH_SET_BIT_EX.
+ * For more information see FOR_EACH_SET_BIT_EX.
  *
  * @param var Loop index variable that stores fallowing set track. Must be of type Track.
  * @param track_bits The value to iterate through (any expression).
@@ -61,7 +59,7 @@ static inline bool IsValidTrackdirForRoadVehicle(Trackdir trackdir)
  */
 static inline bool IsValidTrackdir(Trackdir trackdir)
 {
-	return (1 << trackdir & TRACKDIR_BIT_MASK) != 0;
+	return trackdir != INVALID_TRACKDIR && ((1 << trackdir & TRACKDIR_BIT_MASK) != TRACKDIR_BIT_NONE);
 }
 
 /**
@@ -127,7 +125,7 @@ static inline TrackdirBits TrackdirToTrackdirBits(Trackdir trackdir)
 /**
  * Removes first Track from TrackBits and returns it
  *
- * This function searchs for the first bit in the TrackBits,
+ * This function searches for the first bit in the TrackBits,
  * remove this bit from the parameter and returns the found
  * bit as Track value. It returns INVALID_TRACK if the
  * parameter was TRACK_BIT_NONE or INVALID_TRACK_BIT. This
@@ -329,6 +327,28 @@ static inline TrackBits TrackdirBitsToTrackBits(TrackdirBits bits)
 static inline TrackdirBits TrackBitsToTrackdirBits(TrackBits bits)
 {
 	return (TrackdirBits)(bits * 0x101);
+}
+
+/**
+ * Checks whether a TrackBits has a given Track.
+ * @param tracks The track bits.
+ * @param track The track to check.
+ */
+static inline bool HasTrack(TrackBits tracks, Track track)
+{
+	assert(IsValidTrack(track));
+	return HasBit(tracks, track);
+}
+
+/**
+ * Checks whether a TrackdirBits has a given Trackdir.
+ * @param trackdirs The trackdir bits.
+ * @param trackdir The trackdir to check.
+ */
+static inline bool HasTrackdir(TrackdirBits trackdirs, Trackdir trackdir)
+{
+	assert(IsValidTrackdir(trackdir));
+	return HasBit(trackdirs, trackdir);
 }
 
 /**
@@ -625,7 +645,7 @@ static inline bool IsDiagonalTrackdir(Trackdir trackdir)
 
 /**
  * Checks if the given tracks overlap, ie form a crossing. Basically this
- * means when there is more than one track on the tile, exept when there are
+ * means when there is more than one track on the tile, except when there are
  * two parallel tracks.
  * @param  bits The tracks present.
  * @return Whether the tracks present overlap in any way.
@@ -690,6 +710,27 @@ static inline bool IsUphillTrackdir(Slope slope, Trackdir dir)
 	assert(IsValidTrackdirForRoadVehicle(dir));
 	extern const TrackdirBits _uphill_trackdirs[];
 	return HasBit(_uphill_trackdirs[RemoveHalftileSlope(slope)], dir);
+}
+
+/**
+ * Determine the side in which the vehicle will leave the tile
+ *
+ * @param direction vehicle direction
+ * @param track vehicle track bits
+ * @return side of tile the vehicle will leave
+ */
+static inline DiagDirection VehicleExitDir(Direction direction, TrackBits track)
+{
+	static const TrackBits state_dir_table[DIAGDIR_END] = { TRACK_BIT_RIGHT, TRACK_BIT_LOWER, TRACK_BIT_LEFT, TRACK_BIT_UPPER };
+
+	DiagDirection diagdir = DirToDiagDir(direction);
+
+	/* Determine the diagonal direction in which we will exit this tile */
+	if (!HasBit(direction, 0) && track != state_dir_table[diagdir]) {
+		diagdir = ChangeDiagDir(diagdir, DIAGDIRDIFF_90LEFT);
+	}
+
+	return diagdir;
 }
 
 #endif /* TRACK_FUNC_H */

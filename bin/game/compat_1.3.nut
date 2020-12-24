@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -22,4 +20,11 @@ GSNews._Create <- GSNews.Create;
 GSNews.Create <- function(type, text, company)
 {
     return GSNews._Create(type, text, company, GSNews.NR_NONE, 0);
+}
+
+/* 1.9 adds a vehicle type parameter. */
+GSBridge._GetName <- GSBridge.GetName;
+GSBridge.GetName <- function(bridge_id)
+{
+	return GSBridge._GetName(bridge_id, GSVehicle.VT_RAIL);
 }

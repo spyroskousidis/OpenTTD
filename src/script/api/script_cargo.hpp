@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -36,7 +34,7 @@ public:
 		CC_LIQUID       = ::CC_LIQUID,       ///< Liquids (Oil, Water, Rubber)
 		CC_REFRIGERATED = ::CC_REFRIGERATED, ///< Refrigerated cargo (Food, Fruit)
 		CC_HAZARDOUS    = ::CC_HAZARDOUS,    ///< Hazardous cargo (Nuclear Fuel, Explosives, etc.)
-		CC_COVERED      = ::CC_COVERED,      ///< Covered/Sheltered Freight (Transporation in Box Vans, Silo Wagons, etc.)
+		CC_COVERED      = ::CC_COVERED,      ///< Covered/Sheltered Freight (Transportation in Box Vans, Silo Wagons, etc.)
 	};
 
 	/**
@@ -59,6 +57,7 @@ public:
 		/* Note: these values represent part of the in-game CargoTypes enum */
 		CT_AUTO_REFIT = ::CT_AUTO_REFIT, ///< Automatically choose cargo type when doing auto-refitting.
 		CT_NO_REFIT   = ::CT_NO_REFIT,   ///< Do not refit cargo of a vehicle.
+		CT_INVALID    = ::CT_INVALID,    ///< An invalid cargo type.
 	};
 
 	/**

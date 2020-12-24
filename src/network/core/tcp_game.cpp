@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -10,8 +8,6 @@
 /**
  * @file tcp_game.cpp Basic functions to receive and send TCP packets for game purposes.
  */
-
-#ifdef ENABLE_NETWORK
 
 #include "../../stdafx.h"
 
@@ -28,7 +24,7 @@
  * Create a new socket for the game connection.
  * @param s The socket to connect with.
  */
-NetworkGameSocketHandler::NetworkGameSocketHandler(SOCKET s) : info(NULL), client_id(INVALID_CLIENT_ID),
+NetworkGameSocketHandler::NetworkGameSocketHandler(SOCKET s) : info(nullptr), client_id(INVALID_CLIENT_ID),
 		last_frame(_frame_counter), last_frame_server(_frame_counter), last_packet(_realtime_tick)
 {
 	this->sock = s;
@@ -45,6 +41,8 @@ NetworkRecvStatus NetworkGameSocketHandler::CloseConnection(bool error)
 {
 	/* Clients drop back to the main menu */
 	if (!_network_server && _networking) {
+		extern void ClientNetworkEmergencySave(); // from network_client.cpp
+		ClientNetworkEmergencySave();
 		_switch_mode = SM_MENU;
 		_networking = false;
 		ShowErrorMessage(STR_NETWORK_ERROR_LOSTCONNECTION, INVALID_STRING_ID, WL_CRITICAL);
@@ -134,7 +132,7 @@ NetworkRecvStatus NetworkGameSocketHandler::HandlePacket(Packet *p)
 NetworkRecvStatus NetworkGameSocketHandler::ReceivePackets()
 {
 	Packet *p;
-	while ((p = this->ReceivePacket()) != NULL) {
+	while ((p = this->ReceivePacket()) != nullptr) {
 		NetworkRecvStatus res = HandlePacket(p);
 		delete p;
 		if (res != NETWORK_RECV_STATUS_OKAY) return res;
@@ -197,5 +195,3 @@ NetworkRecvStatus NetworkGameSocketHandler::Receive_SERVER_MOVE(Packet *p) { ret
 NetworkRecvStatus NetworkGameSocketHandler::Receive_CLIENT_MOVE(Packet *p) { return this->ReceiveInvalidPacket(PACKET_CLIENT_MOVE); }
 NetworkRecvStatus NetworkGameSocketHandler::Receive_SERVER_COMPANY_UPDATE(Packet *p) { return this->ReceiveInvalidPacket(PACKET_SERVER_COMPANY_UPDATE); }
 NetworkRecvStatus NetworkGameSocketHandler::Receive_SERVER_CONFIG_UPDATE(Packet *p) { return this->ReceiveInvalidPacket(PACKET_SERVER_CONFIG_UPDATE); }
-
-#endif /* ENABLE_NETWORK */

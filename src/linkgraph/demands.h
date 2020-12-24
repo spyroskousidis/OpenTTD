@@ -23,14 +23,14 @@ private:
 };
 
 /**
- * Stateless, thread safe demand hander. Doesn't do anything but call DemandCalculator.
+ * Stateless, thread safe demand handler. Doesn't do anything but call DemandCalculator.
  */
 class DemandHandler : public ComponentHandler {
 public:
 
 	/**
 	 * Call the demand calculator on the given component.
-	 * @param graph Component to calculate the demands for.
+	 * @param job Component to calculate the demands for.
 	 */
 	virtual void Run(LinkGraphJob &job) const { DemandCalculator c(job); }
 

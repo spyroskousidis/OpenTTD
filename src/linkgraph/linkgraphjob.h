@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -12,9 +10,10 @@
 #ifndef LINKGRAPHJOB_H
 #define LINKGRAPHJOB_H
 
-#include "../thread/thread.h"
+#include "../thread.h"
 #include "linkgraph.h"
 #include <list>
+#include <atomic>
 
 class LinkGraphJob;
 class Path;
@@ -50,7 +49,7 @@ private:
 		void Init(uint supply);
 	};
 
-	typedef SmallVector<NodeAnnotation, 16> NodeAnnotationVector;
+	typedef std::vector<NodeAnnotation> NodeAnnotationVector;
 	typedef SmallMatrix<EdgeAnnotation> EdgeAnnotationMatrix;
 
 	friend const SaveLoad *GetLinkGraphJobDesc();
@@ -59,10 +58,11 @@ private:
 protected:
 	const LinkGraph link_graph;       ///< Link graph to by analyzed. Is copied when job is started and mustn't be modified later.
 	const LinkGraphSettings settings; ///< Copy of _settings_game.linkgraph at spawn time.
-	ThreadObject *thread;             ///< Thread the job is running in or NULL if it's running in the main thread.
+	std::thread thread;               ///< Thread the job is running in or a default-constructed thread if it's running in the main thread.
 	Date join_date;                   ///< Date when the job is to be joined.
 	NodeAnnotationVector nodes;       ///< Extra node data necessary for link graph calculation.
 	EdgeAnnotationMatrix edges;       ///< Extra edge data necessary for link graph calculation.
+	std::atomic<bool> job_completed;  ///< Is the job still running. This is accessed by multiple threads and reads may be stale.
 
 	void EraseFlows(NodeID from);
 	void JoinThread();
@@ -162,9 +162,9 @@ public:
 		 * @return Pair of the edge currently pointed to and the ID of its
 		 *         other end.
 		 */
-		SmallPair<NodeID, Edge> operator*() const
+		std::pair<NodeID, Edge> operator*() const
 		{
-			return SmallPair<NodeID, Edge>(this->current, Edge(this->base[this->current], this->base_anno[this->current]));
+			return std::pair<NodeID, Edge>(this->current, Edge(this->base[this->current], this->base_anno[this->current]));
 		}
 
 		/**
@@ -266,8 +266,8 @@ public:
 	 * Bare constructor, only for save/load. link_graph, join_date and actually
 	 * settings have to be brutally const-casted in order to populate them.
 	 */
-	LinkGraphJob() : settings(_settings_game.linkgraph), thread(NULL),
-			join_date(INVALID_DATE) {}
+	LinkGraphJob() : settings(_settings_game.linkgraph),
+			join_date(INVALID_DATE), job_completed(false) {}
 
 	LinkGraphJob(const LinkGraph &orig);
 	~LinkGraphJob();
@@ -275,10 +275,17 @@ public:
 	void Init();
 
 	/**
+	 * Check if job has actually finished.
+	 * This is allowed to spuriously return an incorrect value.
+	 * @return True if job has actually finished.
+	 */
+	inline bool IsJobCompleted() const { return this->job_completed.load(std::memory_order_acquire); }
+
+	/**
 	 * Check if job is supposed to be finished.
 	 * @return True if job should be finished by now, false if not.
 	 */
-	inline bool IsFinished() const { return this->join_date <= _date; }
+	inline bool IsScheduledToBeJoined() const { return this->join_date <= _date; }
 
 	/**
 	 * Get the date when the job should be finished.
@@ -335,8 +342,6 @@ public:
 	 */
 	inline const LinkGraph &Graph() const { return this->link_graph; }
 };
-
-#define FOR_ALL_LINK_GRAPH_JOBS(var) FOR_ALL_ITEMS_FROM(LinkGraphJob, link_graph_job_index, var, 0)
 
 /**
  * A leg of a path in the link graph. Paths can form trees by being "forked".
@@ -403,9 +408,9 @@ public:
 	 */
 	inline void Detach()
 	{
-		if (this->parent != NULL) {
+		if (this->parent != nullptr) {
 			this->parent->num_children--;
-			this->parent = NULL;
+			this->parent = nullptr;
 		}
 	}
 
@@ -415,7 +420,7 @@ public:
 protected:
 
 	/**
-	 * Some boundaries to clamp agains in order to avoid integer overflows.
+	 * Some boundaries to clamp against in order to avoid integer overflows.
 	 */
 	enum PathCapacityBoundaries {
 		PATH_CAP_MULTIPLIER = 16,

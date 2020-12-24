@@ -10,8 +10,6 @@
 ##grflangid 0x11
 
 
-# $Id$
-
 # This file is part of OpenTTD.
 # OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
 # OpenTTD is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -50,9 +48,9 @@ STR_CARGO_PLURAL_WHEAT                                          :गहू
 STR_CARGO_PLURAL_RUBBER                                         :रबर
 STR_CARGO_PLURAL_SUGAR                                          :साखर
 STR_CARGO_PLURAL_TOYS                                           :खेळणी
-STR_CARGO_PLURAL_CANDY                                          :मिठाई
+STR_CARGO_PLURAL_SWEETS                                         :मिठाई
 STR_CARGO_PLURAL_COLA                                           :शीतपेये
-STR_CARGO_PLURAL_COTTON_CANDY                                   :म्हातारीचा कापूस
+STR_CARGO_PLURAL_CANDYFLOSS                                     :म्हातारीचा कापूस
 STR_CARGO_PLURAL_BUBBLES                                        :बुडबुडे
 STR_CARGO_PLURAL_TOFFEE                                         :टॉफी
 STR_CARGO_PLURAL_BATTERIES                                      :बॅटरी
@@ -84,9 +82,9 @@ STR_CARGO_SINGULAR_WHEAT                                        :गहू
 STR_CARGO_SINGULAR_RUBBER                                       :रबर
 STR_CARGO_SINGULAR_SUGAR                                        :साखर
 STR_CARGO_SINGULAR_TOY                                          :खेळणी
-STR_CARGO_SINGULAR_CANDY                                        :मिठाई
+STR_CARGO_SINGULAR_SWEETS                                       :मिठाई
 STR_CARGO_SINGULAR_COLA                                         :कोला
-STR_CARGO_SINGULAR_COTTON_CANDY                                 :कँडी फ्लास
+STR_CARGO_SINGULAR_CANDYFLOSS                                   :कँडी फ्लास
 STR_CARGO_SINGULAR_BUBBLE                                       :बुडबुडा
 STR_CARGO_SINGULAR_TOFFEE                                       :टॉफी
 STR_CARGO_SINGULAR_BATTERY                                      :बॅटरी
@@ -293,6 +291,8 @@ STR_SORT_BY_RANGE                                               :प्रका
 STR_SORT_BY_POPULATION                                          :लोकसंख्या
 STR_SORT_BY_RATING                                              :धारा
 
+# Group by options for vehicle list
+
 # Tooltips for the main toolbar
 STR_TOOLBAR_TOOLTIP_PAUSE_GAME                                  :{BLACK} खेळ स्थगित करा
 STR_TOOLBAR_TOOLTIP_FORWARD                                     :{BLACK}जलद खेळ अग्रेषित
@@ -438,9 +438,6 @@ STR_NEWS_MENU_MESSAGE_HISTORY_MENU                              :निरोप
 STR_ABOUT_MENU_LAND_BLOCK_INFO                                  :जागाची माहिती
 STR_ABOUT_MENU_SEPARATOR                                        :
 STR_ABOUT_MENU_SCREENSHOT                                       :द्श्य
-STR_ABOUT_MENU_ZOOMIN_SCREENSHOT                                :द्श्य मोठे करा
-STR_ABOUT_MENU_DEFAULTZOOM_SCREENSHOT                           :स्थिर द्श्य
-STR_ABOUT_MENU_GIANT_SCREENSHOT                                 :संपूर्ण नकाशा स्क्रीनशॉट
 STR_ABOUT_MENU_ABOUT_OPENTTD                                    :ओपेन टीटीडी बद्दल
 ############ range ends here
 
@@ -603,9 +600,6 @@ STR_MUSIC_PLAYLIST_CUSTOM_1                                     :{TINY_FONT}{BLA
 STR_MUSIC_PLAYLIST_CUSTOM_2                                     :{TINY_FONT}{BLACK}सानुकूल २
 STR_MUSIC_MUSIC_VOLUME                                          :{TINY_FONT}{BLACK}संगीत आवाज
 STR_MUSIC_EFFECTS_VOLUME                                        :{TINY_FONT}{BLACK}प्रभाव आवाज
-STR_MUSIC_RULER_MIN                                             :{TINY_FONT}{BLACK}कमी
-STR_MUSIC_RULER_MAX                                             :{TINY_FONT}{BLACK}अधिक
-STR_MUSIC_RULER_MARKER                                          :{TINY_FONT}{BLACK}'
 STR_MUSIC_TRACK_NONE                                            :{TINY_FONT}{DKGREEN}--
 STR_MUSIC_TRACK_DIGIT                                           :{TINY_FONT}{DKGREEN}{ZEROFILL_NUM}
 STR_MUSIC_TITLE_NONE                                            :{TINY_FONT}{DKGREEN}------
@@ -687,6 +681,7 @@ STR_NEWS_NEW_VEHICLE_TYPE                                       :{BIG_FONT}{BLAC
 
 
 
+
 # Extra view window
 
 # Game options window
@@ -759,6 +754,8 @@ STR_GAME_OPTIONS_RESOLUTION_OTHER                               :अन्य
 
 
 
+
+
 # Custom currency window
 
 
@@ -794,6 +791,7 @@ STR_CONFIG_SETTING_REALISTIC                                    :खरेखु
 
 
 STR_CONFIG_SETTING_SMOKE_AMOUNT                                 :वाहनांचा धूर/ठिणग्या: {STRING}
+
 
 
 STR_CONFIG_SETTING_WARN_LOST_VEHICLE                            : वाहन हरवल्यास सूचित करा: {STRING}
@@ -843,8 +841,6 @@ STR_INTRO_CAPTION                                               :{WHITE}ओप�
 
 
 # Quit window
-
-# Supported OSes
 
 # Abandon game
 
@@ -1028,6 +1024,7 @@ STR_BRIDGE_NAME_WOODEN                                          :लाकडी
 
 # Road construction toolbar
 
+
 # Road depot construction window
 
 # Road vehicle station construction window
@@ -1106,6 +1103,13 @@ STR_LAI_WATER_DESCRIPTION_RIVER                                 :नदी
 
 # About OpenTTD window
 STR_ABOUT_OPENTTD                                               :{WHITE}ओपेन टीटीडी बद्दल
+
+# Framerate display window
+############ Leave those lines in this order!!
+############ End of leave-in-this-order
+############ Leave those lines in this order!!
+############ End of leave-in-this-order
+
 
 # Save/load game/scenario
 STR_SAVELOAD_BYTES_FREE                                         :{BLACK}{BYTES} मोकळ
@@ -1270,17 +1274,7 @@ STR_INDUSTRY_DIRECTORY_ITEM_NOPROD                              :{ORANGE}{INDUST
 # Industry view
 STR_INDUSTRY_VIEW_CAPTION                                       :{WHITE}{INDUSTRY}
 
-############ range for requires starts
-STR_INDUSTRY_VIEW_REQUIRES_CARGO                                :{BLACK}लाग्त: {YELLOW}{STRING}{STRING}
-STR_INDUSTRY_VIEW_REQUIRES_CARGO_CARGO                          :{BLACK}लाग्त: {YELLOW}{STRING}{STRING}, {STRING}{STRING}
-STR_INDUSTRY_VIEW_REQUIRES_CARGO_CARGO_CARGO                    :{BLACK}लाग्त: {YELLOW}{STRING}{STRING}, {STRING}{STRING}, {STRING}{STRING}
-############ range for requires ends
 
-
-############ range for produces starts
-STR_INDUSTRY_VIEW_PRODUCES_CARGO                                :{BLACK}बनव्त: {YELLOW}{STRING}{STRING}
-STR_INDUSTRY_VIEW_PRODUCES_CARGO_CARGO                          :{BLACK}बनव्त: {YELLOW}{STRING}{STRING}, {STRING}{STRING}
-############ range for produces ends
 
 
 # Vehicle lists
@@ -1304,6 +1298,7 @@ STR_GROUP_ALL_AIRCRAFTS                                         :सर्व �
 
 
 
+
 STR_GROUP_REMOVE_ALL_VEHICLES                                   :सगळे वाहने काढा
 
 
@@ -1311,8 +1306,11 @@ STR_GROUP_REMOVE_ALL_VEHICLES                                   :सगळे �
 # Build vehicle window
 
 STR_BUY_VEHICLE_ROAD_VEHICLE_CAPTION                            :नवीन रस्त्यावरचे वाहन
+
+############ range for vehicle availability starts
 STR_BUY_VEHICLE_SHIP_CAPTION                                    :नवीन जहाज
 STR_BUY_VEHICLE_AIRCRAFT_CAPTION                                :नवीन विमान
+############ range for vehicle availability ends
 
 STR_PURCHASE_INFO_COST_WEIGHT                                   :{BLACK}किंमत: {GOLD}{CURRENCY_LONG}{BLACK} वजन: {GOLD}{WEIGHT_SHORT}
 STR_PURCHASE_INFO_SPEED_POWER                                   :{BLACK}गती: {GOLD}{VELOCITY}{BLACK} शक्ती: {GOLD}{POWER}
@@ -1320,6 +1318,8 @@ STR_PURCHASE_INFO_SPEED                                         :{BLACK}गत�
 STR_PURCHASE_INFO_COST                                          :{BLACK}किंमत: {GOLD}{CURRENCY_LONG}
 STR_PURCHASE_INFO_WEIGHT_CWEIGHT                                :{BLACK}वजन: {GOLD}{WEIGHT_SHORT} ({WEIGHT_SHORT})
 STR_PURCHASE_INFO_COST_SPEED                                    :{BLACK}किंमत: {GOLD}{CURRENCY_LONG}{BLACK} गती: {GOLD}{VELOCITY}
+
+
 
 
 
@@ -1353,6 +1353,9 @@ STR_DEPOT_VEHICLE_TOOLTIP_CARGO                                 :{}{CARGO_LONG} 
 
 
 # Engine preview window
+
+
+
 STR_ENGINE_PREVIEW_AIRCRAFT                                     :विमान
 STR_ENGINE_PREVIEW_SHIP                                         :जहाज
 
@@ -1360,6 +1363,7 @@ STR_ENGINE_PREVIEW_SHIP                                         :जहाज
 # Autoreplace window
 STR_REPLACE_VEHICLE_SHIP                                        :जहाज
 STR_REPLACE_VEHICLE_AIRCRAFT                                    :विमान
+
 
 
 
@@ -1477,6 +1481,7 @@ STR_TIMETABLE_CHANGE_TIME                                       :{BLACK}वे�
 STR_AI_CONFIG_CHANGE_NONE                                       :
 
 # Available AIs window
+
 
 
 

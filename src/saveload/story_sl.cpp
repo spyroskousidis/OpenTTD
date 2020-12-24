@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -19,7 +17,7 @@
 /** Called after load to trash broken pages. */
 void AfterLoadStoryBook()
 {
-	if (IsSavegameVersionBefore(185)) {
+	if (IsSavegameVersionBefore(SLV_185)) {
 		/* Trash all story pages and page elements because
 		 * they were saved with wrong data types.
 		 */
@@ -29,11 +27,11 @@ void AfterLoadStoryBook()
 }
 
 static const SaveLoad _story_page_elements_desc[] = {
-	SLE_CONDVAR(StoryPageElement, sort_value,    SLE_FILE_U16 | SLE_VAR_U32, 0,   184),
-	SLE_CONDVAR(StoryPageElement, sort_value,    SLE_UINT32,                 185, SL_MAX_VERSION),
+	SLE_CONDVAR(StoryPageElement, sort_value,    SLE_FILE_U16 | SLE_VAR_U32, SL_MIN_VERSION,   SLV_185),
+	SLE_CONDVAR(StoryPageElement, sort_value,    SLE_UINT32,                 SLV_185, SL_MAX_VERSION),
 	    SLE_VAR(StoryPageElement, page,          SLE_UINT16),
-	SLE_CONDVAR(StoryPageElement, type,          SLE_FILE_U16 | SLE_VAR_U8,  0,   184),
-	SLE_CONDVAR(StoryPageElement, type,          SLE_UINT8,                  185, SL_MAX_VERSION),
+	SLE_CONDVAR(StoryPageElement, type,          SLE_FILE_U16 | SLE_VAR_U8,  SL_MIN_VERSION,   SLV_185),
+	SLE_CONDVAR(StoryPageElement, type,          SLE_UINT8,                  SLV_185, SL_MAX_VERSION),
 	    SLE_VAR(StoryPageElement, referenced_id, SLE_UINT32),
 	    SLE_STR(StoryPageElement, text,          SLE_STR | SLF_ALLOW_CONTROL, 0),
 	    SLE_END()
@@ -41,8 +39,7 @@ static const SaveLoad _story_page_elements_desc[] = {
 
 static void Save_STORY_PAGE_ELEMENT()
 {
-	StoryPageElement *s;
-	FOR_ALL_STORY_PAGE_ELEMENTS(s) {
+	for (StoryPageElement *s : StoryPageElement::Iterate()) {
 		SlSetArrayIndex(s->index);
 		SlObject(s, _story_page_elements_desc);
 	}
@@ -66,19 +63,18 @@ static void Load_STORY_PAGE_ELEMENT()
 }
 
 static const SaveLoad _story_pages_desc[] = {
-	SLE_CONDVAR(StoryPage, sort_value, SLE_FILE_U16 | SLE_VAR_U32, 0,   184),
-	SLE_CONDVAR(StoryPage, sort_value, SLE_UINT32,                 185, SL_MAX_VERSION),
+	SLE_CONDVAR(StoryPage, sort_value, SLE_FILE_U16 | SLE_VAR_U32, SL_MIN_VERSION,   SLV_185),
+	SLE_CONDVAR(StoryPage, sort_value, SLE_UINT32,                 SLV_185, SL_MAX_VERSION),
 	    SLE_VAR(StoryPage, date,       SLE_UINT32),
-	SLE_CONDVAR(StoryPage, company,    SLE_FILE_U16 | SLE_VAR_U8,  0,   184),
-	SLE_CONDVAR(StoryPage, company,    SLE_UINT8,                  185, SL_MAX_VERSION),
+	SLE_CONDVAR(StoryPage, company,    SLE_FILE_U16 | SLE_VAR_U8,  SL_MIN_VERSION,   SLV_185),
+	SLE_CONDVAR(StoryPage, company,    SLE_UINT8,                  SLV_185, SL_MAX_VERSION),
 	    SLE_STR(StoryPage, title,      SLE_STR | SLF_ALLOW_CONTROL, 0),
 	    SLE_END()
 };
 
 static void Save_STORY_PAGE()
 {
-	StoryPage *s;
-	FOR_ALL_STORY_PAGES(s) {
+	for (StoryPage *s : StoryPage::Iterate()) {
 		SlSetArrayIndex(s->index);
 		SlObject(s, _story_pages_desc);
 	}
@@ -102,6 +98,6 @@ static void Load_STORY_PAGE()
 }
 
 extern const ChunkHandler _story_page_chunk_handlers[] = {
-	{ 'STPE', Save_STORY_PAGE_ELEMENT, Load_STORY_PAGE_ELEMENT, NULL, NULL, CH_ARRAY},
-	{ 'STPA', Save_STORY_PAGE, Load_STORY_PAGE, NULL, NULL, CH_ARRAY | CH_LAST},
+	{ 'STPE', Save_STORY_PAGE_ELEMENT, Load_STORY_PAGE_ELEMENT, nullptr, nullptr, CH_ARRAY},
+	{ 'STPA', Save_STORY_PAGE,         Load_STORY_PAGE,         nullptr, nullptr, CH_ARRAY | CH_LAST},
 };

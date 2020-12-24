@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -145,6 +143,7 @@ struct CursorVars {
 	/* Drag data */
 	bool vehchain;                ///< vehicle chain is dragged
 
+	void UpdateCursorPositionRelative(int delta_x, int delta_y);
 	bool UpdateCursorPosition(int x, int y, bool queued_warp);
 
 private:
@@ -164,7 +163,9 @@ struct DrawPixelInfo {
 union Colour {
 	uint32 data; ///< Conversion of the channel information to a 32 bit number.
 	struct {
-#if TTD_ENDIAN == TTD_BIG_ENDIAN
+#if defined(__EMSCRIPTEN__)
+		uint8 r, g, b, a;  ///< colour channels as used in browsers
+#elif TTD_ENDIAN == TTD_BIG_ENDIAN
 		uint8 a, r, g, b; ///< colour channels in BE order
 #else
 		uint8 b, g, r, a; ///< colour channels in LE order
@@ -179,7 +180,9 @@ union Colour {
 	 * @param a The channel for the alpha/transparency.
 	 */
 	Colour(uint8 r, uint8 g, uint8 b, uint8 a = 0xFF) :
-#if TTD_ENDIAN == TTD_BIG_ENDIAN
+#if defined(__EMSCRIPTEN__)
+		r(r), g(g), b(b), a(a)
+#elif TTD_ENDIAN == TTD_BIG_ENDIAN
 		a(a), r(r), g(g), b(b)
 #else
 		b(b), g(g), r(r), a(a)
@@ -189,7 +192,7 @@ union Colour {
 
 	/**
 	 * Create a new colour.
-	 * @param The colour in the correct packed format.
+	 * @param data The colour in the correct packed format.
 	 */
 	Colour(uint data = 0) : data(data)
 	{
@@ -241,7 +244,7 @@ enum Colours {
 	COLOUR_END,
 	INVALID_COLOUR = 0xFF,
 };
-template <> struct EnumPropsT<Colours> : MakeEnumPropsT<Colours, byte, COLOUR_BEGIN, COLOUR_END, INVALID_COLOUR, 4> {};
+template <> struct EnumPropsT<Colours> : MakeEnumPropsT<Colours, byte, COLOUR_BEGIN, COLOUR_END, INVALID_COLOUR, 8> {};
 
 /** Colour of the strings, see _string_colourmap in table/string_colours.h or docs/ottd-colourtext-palette.png */
 enum TextColour {
@@ -269,6 +272,7 @@ enum TextColour {
 
 	TC_IS_PALETTE_COLOUR = 0x100, ///< Colour value is already a real palette colour index, not an index of a StringColour.
 	TC_NO_SHADE          = 0x200, ///< Do not add shading to this text colour.
+	TC_FORCED            = 0x400, ///< Ignore colour changes from strings.
 };
 DECLARE_ENUM_AS_BIT_SET(TextColour)
 
@@ -294,7 +298,7 @@ enum PaletteType {
 };
 
 /** Types of sprites that might be loaded */
-enum SpriteType {
+enum SpriteType : byte {
 	ST_NORMAL   = 0,      ///< The most basic (normal) sprite
 	ST_MAPGEN   = 1,      ///< Special sprite for the map generator
 	ST_FONT     = 2,      ///< A sprite used for fonts

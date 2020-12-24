@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -36,6 +34,10 @@ static const IndustryGfx  NUM_INDUSTRYTILES      = 512;               ///< total
 static const IndustryGfx  INVALID_INDUSTRYTILE   = NUM_INDUSTRYTILES; ///< one above amount is considered invalid
 
 static const int INDUSTRY_COMPLETED = 3; ///< final stage of industry construction.
+
+static const int INDUSTRY_NUM_INPUTS = 16;  ///< Number of cargo types an industry can accept
+static const int INDUSTRY_NUM_OUTPUTS = 16; ///< Number of cargo types an industry can produce
+
 
 void CheckIndustries();
 

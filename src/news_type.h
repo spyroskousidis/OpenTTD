@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -16,19 +14,6 @@
 #include "date_type.h"
 #include "strings_type.h"
 #include "sound_type.h"
-
-/** Constants in the message options window. */
-enum MessageOptionsSpace {
-	MOS_WIDG_PER_SETTING      = 4,  ///< Number of widgets needed for each news category, starting at widget #WID_MO_START_OPTION.
-
-	MOS_LEFT_EDGE             = 6,  ///< Number of pixels between left edge of the window and the options buttons column.
-	MOS_COLUMN_SPACING        = 4,  ///< Number of pixels between the buttons and the description columns.
-	MOS_RIGHT_EDGE            = 6,  ///< Number of pixels between right edge of the window and the options descriptions column.
-	MOS_BUTTON_SPACE          = 10, ///< Additional space in the button with the option value (for better looks).
-
-	MOS_ABOVE_GLOBAL_SETTINGS = 6,  ///< Number of vertical pixels between the categories and the global options.
-	MOS_BOTTOM_EDGE           = 6,  ///< Number of pixels between bottom edge of the window and bottom of the global options.
-};
 
 /**
  * Type of news.
@@ -141,8 +126,8 @@ struct NewsItem {
 
 	NewsReferenceType reftype1;  ///< Type of ref1
 	NewsReferenceType reftype2;  ///< Type of ref2
-	uint32 ref1;                 ///< Reference 1 to some object: Used for a possible viewport, scrolling after clicking on the news, and for deleteing the news when the object is deleted.
-	uint32 ref2;                 ///< Reference 2 to some object: Used for scrolling after clicking on the news, and for deleteing the news when the object is deleted.
+	uint32 ref1;                 ///< Reference 1 to some object: Used for a possible viewport, scrolling after clicking on the news, and for deleting the news when the object is deleted.
+	uint32 ref2;                 ///< Reference 2 to some object: Used for scrolling after clicking on the news, and for deleting the news when the object is deleted.
 
 	void *free_data;             ///< Data to be freed when the news item has reached its end.
 
@@ -168,7 +153,7 @@ struct CompanyNewsInformation {
 	uint32 face; ///< The face of the president
 	byte colour; ///< The colour related to the company
 
-	void FillData(const struct Company *c, const struct Company *other = NULL);
+	void FillData(const struct Company *c, const struct Company *other = nullptr);
 };
 
 #endif /* NEWS_TYPE_H */

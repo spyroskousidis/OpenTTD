@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -21,7 +19,7 @@ class MusicDriver : public Driver {
 public:
 	/**
 	 * Play a particular song.
-	 * @param filename The name of file with the song to play.
+	 * @param song The information for the song to play.
 	 */
 	virtual void PlaySong(const MusicSongInfo &song) = 0;
 
@@ -50,6 +48,6 @@ public:
 	}
 };
 
-extern char *_ini_musicdriver;
+extern std::string _ini_musicdriver;
 
 #endif /* MUSIC_MUSIC_DRIVER_HPP */

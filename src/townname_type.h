@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -23,7 +21,7 @@
 typedef std::set<std::string> TownNames;
 
 /**
- * Struct holding a parameters used to generate town name.
+ * Struct holding parameters used to generate town name.
  * Speeds things up a bit because these values are computed only once per name generation.
  */
 struct TownNameParams {

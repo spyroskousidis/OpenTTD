@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -15,6 +13,7 @@
 #include "town_type.h"
 #include "engine_type.h"
 #include "house_type.h"
+#include "industry_type.h"
 
 #include "newgrf_callbacks.h"
 #include "newgrf_generic.h"
@@ -57,13 +56,14 @@ extern SpriteGroupPool _spritegroup_pool;
 /* Common wrapper for all the different sprite group types */
 struct SpriteGroup : SpriteGroupPool::PoolItem<&_spritegroup_pool> {
 protected:
-	SpriteGroup(SpriteGroupType type) : type(type) {}
+	SpriteGroup(SpriteGroupType type) : nfo_line(0), type(type) {}
 	/** Base sprite group resolver */
 	virtual const SpriteGroup *Resolve(ResolverObject &object) const { return this; };
 
 public:
 	virtual ~SpriteGroup() {}
 
+	uint32 nfo_line;
 	SpriteGroupType type;
 
 	virtual SpriteID GetResult() const { return 0; }
@@ -276,10 +276,15 @@ struct TileLayoutSpriteGroup : SpriteGroup {
 struct IndustryProductionSpriteGroup : SpriteGroup {
 	IndustryProductionSpriteGroup() : SpriteGroup(SGT_INDUSTRY_PRODUCTION) {}
 
-	uint8 version;
-	int16 subtract_input[3];  // signed
-	uint16 add_output[2];     // unsigned
+	uint8 version;                              ///< Production callback version used, or 0xFF if marked invalid
+	uint8 num_input;                            ///< How many subtract_input values are valid
+	int16 subtract_input[INDUSTRY_NUM_INPUTS];  ///< Take this much of the input cargo (can be negative, is indirect in cb version 1+)
+	CargoID cargo_input[INDUSTRY_NUM_INPUTS];   ///< Which input cargoes to take from (only cb version 2)
+	uint8 num_output;                           ///< How many add_output values are valid
+	uint16 add_output[INDUSTRY_NUM_OUTPUTS];    ///< Add this much output cargo when successful (unsigned, is indirect in cb version 1+)
+	CargoID cargo_output[INDUSTRY_NUM_OUTPUTS]; ///< Which output cargoes to add to (only cb version 2)
 	uint8 again;
+
 };
 
 /**
@@ -310,13 +315,13 @@ struct ScopeResolver {
 struct ResolverObject {
 	/**
 	 * Resolver constructor.
-	 * @param grffile NewGRF file associated with the object (or \c NULL if none).
+	 * @param grffile NewGRF file associated with the object (or \c nullptr if none).
 	 * @param callback Callback code being resolved (default value is #CBID_NO_CALLBACK).
 	 * @param callback_param1 First parameter (var 10) of the callback (only used when \a callback is also set).
 	 * @param callback_param2 Second parameter (var 18) of the callback (only used when \a callback is also set).
 	 */
 	ResolverObject(const GRFFile *grffile, CallbackID callback = CBID_NO_CALLBACK, uint32 callback_param1 = 0, uint32 callback_param2 = 0)
-		: default_scope(*this), callback(callback), callback_param1(callback_param1), callback_param2(callback_param2), grffile(grffile), root_spritegroup(NULL)
+		: default_scope(*this), callback(callback), callback_param1(callback_param1), callback_param2(callback_param2), grffile(grffile), root_spritegroup(nullptr)
 	{
 		this->ResetState();
 	}
@@ -354,7 +359,7 @@ struct ResolverObject {
 	uint16 ResolveCallback()
 	{
 		const SpriteGroup *result = Resolve();
-		return result != NULL ? result->GetCallbackResult() : CALLBACK_FAILED;
+		return result != nullptr ? result->GetCallbackResult() : CALLBACK_FAILED;
 	}
 
 	virtual const SpriteGroup *ResolveReal(const RealSpriteGroup *group) const;
@@ -394,6 +399,18 @@ struct ResolverObject {
 		this->used_triggers = 0;
 		memset(this->reseed, 0, sizeof(this->reseed));
 	}
+
+	/**
+	 * Get the feature number being resolved for.
+	 * This function is mainly intended for the callback profiling feature.
+	 */
+	virtual GrfSpecFeature GetFeature() const { return GSF_INVALID; }
+	/**
+	 * Get an identifier for the item being resolved.
+	 * This function is mainly intended for the callback profiling feature,
+	 * and should return an identifier recognisable by the NewGRF developer.
+	 */
+	virtual uint32 GetDebugID() const { return 0; }
 };
 
 #endif /* NEWGRF_SPRITEGROUP_H */

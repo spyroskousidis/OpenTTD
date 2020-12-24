@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -20,57 +18,70 @@
 static OldPersistentStorage _old_ind_persistent_storage;
 
 static const SaveLoad _industry_desc[] = {
-	SLE_CONDVAR(Industry, location.tile,              SLE_FILE_U16 | SLE_VAR_U32,  0, 5),
-	SLE_CONDVAR(Industry, location.tile,              SLE_UINT32,                  6, SL_MAX_VERSION),
+	SLE_CONDVAR(Industry, location.tile,              SLE_FILE_U16 | SLE_VAR_U32,  SL_MIN_VERSION, SLV_6),
+	SLE_CONDVAR(Industry, location.tile,              SLE_UINT32,                  SLV_6, SL_MAX_VERSION),
 	    SLE_VAR(Industry, location.w,                 SLE_FILE_U8 | SLE_VAR_U16),
 	    SLE_VAR(Industry, location.h,                 SLE_FILE_U8 | SLE_VAR_U16),
 	    SLE_REF(Industry, town,                       REF_TOWN),
-	SLE_CONDNULL( 2, 0, 60),       ///< used to be industry's produced_cargo
-	SLE_CONDARR(Industry, produced_cargo,             SLE_UINT8,  2,              78, SL_MAX_VERSION),
-	SLE_CONDARR(Industry, incoming_cargo_waiting,     SLE_UINT16, 3,              70, SL_MAX_VERSION),
-	    SLE_ARR(Industry, produced_cargo_waiting,     SLE_UINT16, 2),
-	    SLE_ARR(Industry, production_rate,            SLE_UINT8,  2),
-	SLE_CONDNULL( 3, 0, 60),       ///< used to be industry's accepts_cargo
-	SLE_CONDARR(Industry, accepts_cargo,              SLE_UINT8,  3,              78, SL_MAX_VERSION),
+	SLE_CONDREF(Industry, neutral_station,            REF_STATION,                SLV_SERVE_NEUTRAL_INDUSTRIES, SL_MAX_VERSION),
+	SLE_CONDNULL( 2, SL_MIN_VERSION, SLV_61),       ///< used to be industry's produced_cargo
+	SLE_CONDARR(Industry, produced_cargo,             SLE_UINT8,   2,              SLV_78, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, produced_cargo,             SLE_UINT8,  16,             SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
+	SLE_CONDARR(Industry, incoming_cargo_waiting,     SLE_UINT16,  3,              SLV_70, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, incoming_cargo_waiting,     SLE_UINT16, 16,             SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
+	SLE_CONDARR(Industry, produced_cargo_waiting,     SLE_UINT16,  2,               SL_MIN_VERSION, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, produced_cargo_waiting,     SLE_UINT16, 16,             SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
+	SLE_CONDARR(Industry, production_rate,            SLE_UINT8,   2,               SL_MIN_VERSION, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, production_rate,            SLE_UINT8,  16,             SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
+	SLE_CONDNULL( 3, SL_MIN_VERSION, SLV_61),       ///< used to be industry's accepts_cargo
+	SLE_CONDARR(Industry, accepts_cargo,              SLE_UINT8,   3,              SLV_78, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, accepts_cargo,              SLE_UINT8,  16,             SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
 	    SLE_VAR(Industry, prod_level,                 SLE_UINT8),
-	    SLE_ARR(Industry, this_month_production,      SLE_UINT16, 2),
-	    SLE_ARR(Industry, this_month_transported,     SLE_UINT16, 2),
-	    SLE_ARR(Industry, last_month_pct_transported, SLE_UINT8,  2),
-	    SLE_ARR(Industry, last_month_production,      SLE_UINT16, 2),
-	    SLE_ARR(Industry, last_month_transported,     SLE_UINT16, 2),
+	SLE_CONDARR(Industry, this_month_production,      SLE_UINT16,  2,               SL_MIN_VERSION, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, this_month_production,      SLE_UINT16, 16,             SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
+	SLE_CONDARR(Industry, this_month_transported,     SLE_UINT16,  2,               SL_MIN_VERSION, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, this_month_transported,     SLE_UINT16, 16,             SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
+	SLE_CONDARR(Industry, last_month_pct_transported, SLE_UINT8,   2,               SL_MIN_VERSION, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, last_month_pct_transported, SLE_UINT8,  16,             SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
+	SLE_CONDARR(Industry, last_month_production,      SLE_UINT16,  2,               SL_MIN_VERSION, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, last_month_production,      SLE_UINT16, 16,             SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
+	SLE_CONDARR(Industry, last_month_transported,     SLE_UINT16,  2,               SL_MIN_VERSION, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, last_month_transported,     SLE_UINT16, 16,             SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
 
 	    SLE_VAR(Industry, counter,                    SLE_UINT16),
 
 	    SLE_VAR(Industry, type,                       SLE_UINT8),
 	    SLE_VAR(Industry, owner,                      SLE_UINT8),
 	    SLE_VAR(Industry, random_colour,              SLE_UINT8),
-	SLE_CONDVAR(Industry, last_prod_year,             SLE_FILE_U8 | SLE_VAR_I32,  0, 30),
-	SLE_CONDVAR(Industry, last_prod_year,             SLE_INT32,                 31, SL_MAX_VERSION),
+	SLE_CONDVAR(Industry, last_prod_year,             SLE_FILE_U8 | SLE_VAR_I32,  SL_MIN_VERSION, SLV_31),
+	SLE_CONDVAR(Industry, last_prod_year,             SLE_INT32,                 SLV_31, SL_MAX_VERSION),
 	    SLE_VAR(Industry, was_cargo_delivered,        SLE_UINT8),
+	SLE_CONDVAR(Industry, ctlflags,                   SLE_UINT8,                 SLV_GS_INDUSTRY_CONTROL, SL_MAX_VERSION),
 
-	SLE_CONDVAR(Industry, founder,                    SLE_UINT8,                 70, SL_MAX_VERSION),
-	SLE_CONDVAR(Industry, construction_date,          SLE_INT32,                 70, SL_MAX_VERSION),
-	SLE_CONDVAR(Industry, construction_type,          SLE_UINT8,                 70, SL_MAX_VERSION),
-	SLE_CONDVAR(Industry, last_cargo_accepted_at,     SLE_INT32,                 70, SL_MAX_VERSION),
-	SLE_CONDVAR(Industry, selected_layout,            SLE_UINT8,                 73, SL_MAX_VERSION),
+	SLE_CONDVAR(Industry, founder,                    SLE_UINT8,                 SLV_70, SL_MAX_VERSION),
+	SLE_CONDVAR(Industry, construction_date,          SLE_INT32,                 SLV_70, SL_MAX_VERSION),
+	SLE_CONDVAR(Industry, construction_type,          SLE_UINT8,                 SLV_70, SL_MAX_VERSION),
+	SLE_CONDVAR(Industry, last_cargo_accepted_at[0],  SLE_INT32,                 SLV_70, SLV_EXTEND_INDUSTRY_CARGO_SLOTS),
+	SLE_CONDARR(Industry, last_cargo_accepted_at,     SLE_INT32, 16,            SLV_EXTEND_INDUSTRY_CARGO_SLOTS, SL_MAX_VERSION),
+	SLE_CONDVAR(Industry, selected_layout,            SLE_UINT8,                 SLV_73, SL_MAX_VERSION),
+	SLE_CONDVAR(Industry, exclusive_supplier,         SLE_UINT8,                 SLV_GS_INDUSTRY_CONTROL, SL_MAX_VERSION),
+	SLE_CONDVAR(Industry, exclusive_consumer,         SLE_UINT8,                 SLV_GS_INDUSTRY_CONTROL, SL_MAX_VERSION),
 
-	SLEG_CONDARR(_old_ind_persistent_storage.storage, SLE_UINT32, 16,            76, 160),
-	SLE_CONDREF(Industry, psa,                        REF_STORAGE,              161, SL_MAX_VERSION),
+	SLEG_CONDARR(_old_ind_persistent_storage.storage, SLE_UINT32, 16,            SLV_76, SLV_161),
+	SLE_CONDREF(Industry, psa,                        REF_STORAGE,              SLV_161, SL_MAX_VERSION),
 
-	SLE_CONDNULL(1, 82, 196), // random_triggers
-	SLE_CONDVAR(Industry, random,                     SLE_UINT16,                82, SL_MAX_VERSION),
+	SLE_CONDNULL(1, SLV_82, SLV_197), // random_triggers
+	SLE_CONDVAR(Industry, random,                     SLE_UINT16,                SLV_82, SL_MAX_VERSION),
 
-	SLE_CONDNULL(32, 2, 143), // old reserved space
+	SLE_CONDNULL(32, SLV_2, SLV_144), // old reserved space
 
 	SLE_END()
 };
 
 static void Save_INDY()
 {
-	Industry *ind;
-
 	/* Write the industries */
-	FOR_ALL_INDUSTRIES(ind) {
+	for (Industry *ind : Industry::Iterate()) {
 		SlSetArrayIndex(ind->index);
 		SlObject(ind, _industry_desc);
 	}
@@ -97,11 +108,11 @@ static void Load_INDY()
 		SlObject(i, _industry_desc);
 
 		/* Before savegame version 161, persistent storages were not stored in a pool. */
-		if (IsSavegameVersionBefore(161) && !IsSavegameVersionBefore(76)) {
+		if (IsSavegameVersionBefore(SLV_161) && !IsSavegameVersionBefore(SLV_76)) {
 			/* Store the old persistent storage. The GRFID will be added later. */
 			assert(PersistentStorage::CanAllocateItem());
 			i->psa = new PersistentStorage(0, 0, 0);
-			memcpy(i->psa->storage, _old_ind_persistent_storage.storage, sizeof(i->psa->storage));
+			memcpy(i->psa->storage, _old_ind_persistent_storage.storage, sizeof(_old_ind_persistent_storage.storage));
 		}
 		Industry::IncIndustryTypeCount(i->type);
 	}
@@ -119,9 +130,7 @@ static void Load_TIDS()
 
 static void Ptrs_INDY()
 {
-	Industry *i;
-
-	FOR_ALL_INDUSTRIES(i) {
+	for (Industry *i : Industry::Iterate()) {
 		SlObject(i, _industry_desc);
 	}
 }
@@ -171,9 +180,9 @@ static void Load_ITBL()
 }
 
 extern const ChunkHandler _industry_chunk_handlers[] = {
-	{ 'INDY', Save_INDY,     Load_INDY,     Ptrs_INDY, NULL, CH_ARRAY},
-	{ 'IIDS', Save_IIDS,     Load_IIDS,     NULL,      NULL, CH_ARRAY},
-	{ 'TIDS', Save_TIDS,     Load_TIDS,     NULL,      NULL, CH_ARRAY},
-	{ 'IBLD', LoadSave_IBLD, LoadSave_IBLD, NULL,      NULL, CH_RIFF},
-	{ 'ITBL', Save_ITBL,     Load_ITBL,     NULL,      NULL, CH_ARRAY | CH_LAST},
+	{ 'INDY', Save_INDY,     Load_INDY,     Ptrs_INDY, nullptr, CH_ARRAY},
+	{ 'IIDS', Save_IIDS,     Load_IIDS,     nullptr,   nullptr, CH_ARRAY},
+	{ 'TIDS', Save_TIDS,     Load_TIDS,     nullptr,   nullptr, CH_ARRAY},
+	{ 'IBLD', LoadSave_IBLD, LoadSave_IBLD, nullptr,   nullptr, CH_RIFF},
+	{ 'ITBL', Save_ITBL,     Load_ITBL,     nullptr,   nullptr, CH_ARRAY | CH_LAST},
 };

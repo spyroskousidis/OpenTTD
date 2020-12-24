@@ -1,5 +1,3 @@
-/* $Id$ */
-
 /*
  * This file is part of OpenTTD.
  * OpenTTD is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
@@ -45,6 +43,8 @@ enum AirVehicleFlags {
 	 * landscape at a fixed altitude. This only has effect when there are more than 15 height levels. */
 	VAF_IN_MAX_HEIGHT_CORRECTION = 1, ///< The vehicle is currently lowering its altitude because it hit the upper bound.
 	VAF_IN_MIN_HEIGHT_CORRECTION = 2, ///< The vehicle is currently raising its altitude because it hit the lower bound.
+
+	VAF_HELI_DIRECT_DESCENT      = 3, ///< The helicopter is descending directly at its destination (helipad or in front of hangar)
 };
 
 static const int ROTOR_Z_OFFSET         = 5;    ///< Z Offset between helicopter- and rotorsprite.
@@ -77,7 +77,7 @@ struct Aircraft FINAL : public SpecializedVehicle<Aircraft, VEH_AIRCRAFT> {
 	byte previous_pos;             ///< Previous desired position of the aircraft.
 	StationID targetairport;       ///< Airport to go to next.
 	byte state;                    ///< State of the airport. @see AirportMovementStates
-	DirectionByte last_direction;
+	Direction last_direction;
 	byte number_consecutive_turns; ///< Protection to prevent the aircraft of making a lot of turns in order to reach a specific point.
 	byte turn_counter;             ///< Ticks between each turn to prevent > 45 degree turns.
 	byte flags;                    ///< Aircraft flags. @see AirVehicleFlags
@@ -135,11 +135,6 @@ struct Aircraft FINAL : public SpecializedVehicle<Aircraft, VEH_AIRCRAFT> {
 		return this->acache.cached_max_range;
 	}
 };
-
-/**
- * Macro for iterating over all aircraft.
- */
-#define FOR_ALL_AIRCRAFT(var) FOR_ALL_VEHICLES_OF_TYPE(Aircraft, var)
 
 void GetRotorImage(const Aircraft *v, EngineImageType image_type, VehicleSpriteSeq *result);
 
