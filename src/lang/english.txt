@@ -1624,6 +1624,9 @@ STR_CONFIG_SETTING_EXTRA_TREE_PLACEMENT_NONE                    :None {RED}(brea
 STR_CONFIG_SETTING_EXTRA_TREE_PLACEMENT_RAINFOREST              :Only in rain forests
 STR_CONFIG_SETTING_EXTRA_TREE_PLACEMENT_ALL                     :Everywhere
 
+STR_CONFIG_SETTING_REPEAT_YEAR                                  :Repeat current year: {STRING2}
+STR_CONFIG_SETTING_REPEAT_YEAR_HELPTEXT                         :Unless disabled, current year will repeat forever.
+
 STR_CONFIG_SETTING_TOOLBAR_POS                                  :Position of main toolbar: {STRING2}
 STR_CONFIG_SETTING_TOOLBAR_POS_HELPTEXT                         :Horizontal position of the main toolbar at the top of the screen
 STR_CONFIG_SETTING_STATUSBAR_POS                                :Position of status bar: {STRING2}
